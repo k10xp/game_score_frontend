@@ -1,16 +1,27 @@
-<script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <HelloWorld msg="Hello, World!" />
+  <div>
+    <nav class="nav">
+      <router-link to="/">Home</router-link>
+      <router-link to="/results">Results</router-link>
+    </nav>
 
-  <p>Placeholder text</p>
+    <router-view />
+  </div>
 </template>
 
 <style scoped>
-p {
-  font-style: italic;
-  color: rgb(175, 175, 255);
+.nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+a {
+  text-decoration: none;
+  color: #42b983;
+  font-weight: 600;
 }
 </style>

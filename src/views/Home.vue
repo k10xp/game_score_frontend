@@ -8,7 +8,7 @@ defineProps<{ msg: string }>();
 
 <style scoped>
 h1 {
-  color: #42b983;
+  color: #c5c5c5;
   font-size: 2.4rem;
   font-weight: 700;
   text-align: center;

@@ -1,0 +1,51 @@
+//simulate receive data from java backend
+export const matches = [
+  {
+    matchId: 1,
+    matchDate: "2023-04-07",
+    homeTeam: "Team A",
+    awayTeam: "Team C",
+    homeTeamScore: 3,
+    awayTeamScore: 1,
+  },
+  {
+    matchId: 2,
+    matchDate: "2020-09-12",
+    homeTeam: "Team B",
+    awayTeam: "Team D",
+    homeTeamScore: 2,
+    awayTeamScore: 2,
+  },
+  {
+    matchId: 3,
+    matchDate: "2024-01-25",
+    homeTeam: "Team E",
+    awayTeam: "Team A",
+    homeTeamScore: 0,
+    awayTeamScore: 1,
+  },
+  {
+    matchId: 4,
+    matchDate: "2022-07-18",
+    homeTeam: "Team F",
+    awayTeam: "Team G",
+    homeTeamScore: 4,
+    awayTeamScore: 2,
+  },
+  {
+    matchId: 5,
+    matchDate: "2021-10-03",
+    homeTeam: "Team C",
+    awayTeam: "Team D",
+    homeTeamScore: 1,
+    awayTeamScore: 3,
+  },
+  {
+    matchId: 6,
+    matchDate: "2020-03-28",
+    homeTeam: "Team B",
+    awayTeam: "Team F",
+    homeTeamScore: 2,
+    awayTeamScore: 0,
+  },
+];
