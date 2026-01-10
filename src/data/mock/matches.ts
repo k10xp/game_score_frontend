@@ -1,5 +1,7 @@
+import type { GetMatch } from "../matchModels";
+
 //simulate receive data from java backend
-export const matches = [
+export const matches: GetMatch[] = [
   {
     matchId: 1,
     matchDate: "2023-04-07",
