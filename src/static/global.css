@@ -1,3 +1,179 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #d96946;
+  --color-dark: #0c3270;
+  --color-light: #ffffff;
+  --color-darker: #08234d;
+  --color-success: #39ab6b;
+  --color-error: #e54448;
+}
+
 body {
-  background-color: black;
+  background: var(--color-dark) url('/sportz-bg-orig.jpg') center center
+    no-repeat;
+  background-size: 1400px;
+  background-position: center bottom;
+  color: var(--color-light);
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 400;
+  min-height: 100dvh;
+
+  &:has(.game-single) {
+    background-position: center bottom -100px;
+  }
+
+  &:has(.register-page) {
+    .login-link {
+      text-decoration: underline;
+    }
+  }
+
+  &:has(.login-page) {
+    .register-link {
+      text-decoration: underline;
+    }
+  }
+
+  @media (min-width: 640px) {
+    background-size: 1920px;
+  }
+
+  @media (min-width: 1920px) {
+    background-size: 100%;
+  }
+}
+
+.wrapper {
+  min-height: 100dvh;
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+header {
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--color-light);
+}
+
+table {
+  th,
+  td {
+    padding-bottom: 1rem;
+    &:not(:last-child) {
+      padding-right: 1.5rem;
+    }
+  }
+
+  th {
+    text-align: left;
+  }
+}
+
+.text-input {
+  border: 1px solid var(--color-light);
+  background: transparent;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+}
+
+.form-label {
+  @apply flex flex-col gap-2;
+}
+
+.check {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--color-primary);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.main-border {
+  @apply border-1 rounded-lg;
+}
+
+.button {
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  white-space: nowrap;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &.primary {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+  }
+
+  &.secondary {
+    border: 1px solid var(--color-light);
+    color: var(--color-light);
+  }
+
+  &.simple {
+    text-decoration: underline;
+    color: var(--color-primary);
+    padding: 0;
+  }
+}
+
+.modal-wrap {
+  border: 1px solid var(--color-light);
+  padding: 2.5rem;
+  border-radius: 8px;
+}
+
+.the-form {
+  #message {
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+.games-list {
+  .the-table {
+  }
+}
+
+.game-single {
+  .the-table {
+    tr.inputs {
+      input[type='text'],
+      input[type='number'] {
+        width: 7rem;
+      }
+    }
+  }
+
+  table {
+    th,
+    td {
+      white-space: nowrap;
+    }
+
+    tr.text {
+      opacity: 0.5;
+
+      &.active {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.outer-scroll::-webkit-scrollbar {
+  display: none;
 }

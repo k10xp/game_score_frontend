@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { CreateMatch } from "../data/matchModels";
-import { createMatch } from "../data/create";
-import { API_ENDPOINT } from "../data/consts";
+import { ref } from 'vue';
+import type { CreateMatch } from '../data/matchModels';
+import { createMatch } from '../data/create';
+import { API_ENDPOINT } from '../data/consts';
 
 const form = ref<CreateMatch>({
-  matchDate: "",
-  homeTeam: "",
-  awayTeam: "",
+  matchDate: '',
+  homeTeam: '',
+  awayTeam: '',
   homeTeamScore: 0,
   awayTeamScore: 0,
 });
@@ -22,11 +22,11 @@ const submit = async () => {
     error.value = null;
     statusCode.value = null;
 
-    const endpoint = API_ENDPOINT + "/match";
+    const endpoint = API_ENDPOINT + '/match';
     const status = await createMatch(endpoint, form.value);
     statusCode.value = status;
   } catch (e: any) {
-    error.value = e?.message ?? "Unknown error";
+    error.value = e?.message ?? 'Unknown error';
   } finally {
     submitting.value = false;
   }
@@ -36,114 +36,64 @@ const submit = async () => {
 <!-- wrote my own form, replace with something like shadcn -->
 <!-- TODO: remove extra padding above input form -->
 <template>
-  <div class="page">
-    <form class="match-form" @submit.prevent="submit">
-      <label>
+  <form class="match-form flex flex-col gap-12" @submit.prevent="submit">
+    <div class="flex flex-col gap-4">
+      <h2 class="text-2xl sm:text-3xl">New Game</h2>
+      <label class="form-label">
         Date
-        <input v-model="form.matchDate" type="date" />
+        <input v-model="form.matchDate" class="text-input" type="date" />
       </label>
 
-      <label>
+      <label class="form-label">
         Home team
-        <input v-model="form.homeTeam" type="text" />
+        <input v-model="form.homeTeam" class="text-input" type="text" />
       </label>
 
-      <label>
+      <label class="form-label">
         Away team
-        <input v-model="form.awayTeam" type="text" />
+        <input v-model="form.awayTeam" class="text-input" type="text" />
       </label>
 
-      <label>
+      <label class="form-label">
         Home score
-        <input v-model.number="form.homeTeamScore" type="number" />
+        <input
+          v-model.number="form.homeTeamScore"
+          class="text-input"
+          type="number"
+        />
       </label>
 
-      <label>
+      <label class="form-label">
         Away score
-        <input v-model.number="form.awayTeamScore" type="number" />
+        <input
+          v-model.number="form.awayTeamScore"
+          class="text-input"
+          type="number"
+        />
       </label>
+    </div>
 
-      <button type="submit" :disabled="submitting">
-        {{ submitting ? "Creating..." : "Create match" }}
-      </button>
-
-      <p v-if="statusCode !== null" class="status">Status: {{ statusCode }}</p>
-      <p v-if="error" class="error">
+    <div class="flex flex-col gap-4">
+      <p v-if="statusCode !== null">Status: {{ statusCode }}</p>
+      <p v-if="error" class="text-error">
         {{ error }}
       </p>
-    </form>
-  </div>
+      <div class="flex justify-between flex-col sm:flex-row gap-4">
+        <button class="button primary" type="submit" :disabled="submitting">
+          {{ submitting ? 'Creating...' : 'Create Game' }}
+        </button>
+        <router-link to="/results" class="button secondary">
+          Cancel
+        </router-link>
+      </div>
+    </div>
+  </form>
 </template>
 
 <style scoped>
-.page {
-  min-height: 100vh;
-  background-color: #000;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.match-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.5rem;
-  background-color: #111;
-  border-radius: 8px;
-  border: 1px solid #333;
-  width: 100%;
-  max-width: 500px;
-}
-
-.match-form label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
-}
-
-.match-form input {
-  padding: 0.6rem 0.8rem;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background-color: #000;
-  color: #fff;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.match-form input:focus {
-  outline: none;
-  border-color: #888;
-}
-
 /* make calendar picker not hidden by black background */
-.match-form input[type="date"]::-webkit-calendar-picker-indicator {
+.match-form input[type='date']::-webkit-calendar-picker-indicator {
   filter: invert(1) brightness(0.9);
   cursor: pointer;
-}
-
-button[type="submit"] {
-  margin-top: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  border: 1px solid #fff;
-  background-color: #000;
-  color: #fff;
-  cursor: pointer;
-}
-
-button[type="submit"]:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.status {
-  color: #9acd32;
-}
-
-.error {
-  color: #ff6b6b;
 }
 </style>

@@ -1,28 +1,36 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>
-    <nav class="nav">
-      <router-link to="/">Home</router-link>
-      <router-link to="/results">Results</router-link>
-      <router-link to="/create">Create</router-link>
-    </nav>
+  <div class="flex flex-col gap-14 p-10">
+    <div class="flex flex-col gap-6 w-max mx-auto items-center">
+      <router-link to="/results">
+        <img
+          src="/sportz-scores-logo.svg"
+          class="w-[9rem]"
+          alt="Sportz Scores Logo"
+        />
+      </router-link>
+      <nav class="nav flex gap-4">
+        <router-link to="/results">Games</router-link>
+        <router-link to="/results/create">New Game</router-link>
+      </nav>
+    </div>
 
     <router-view />
+
+    <footer class="text-center text-sm text-light/50">
+      Sportz Scores {{ new Date().getFullYear() }} &nbsp;|&nbsp;
+      <a href="#" class="underline">Contact our team</a>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.nav {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin: 1rem 0;
+nav .router-link-exact-active {
+  @apply no-underline;
 }
 
-a {
-  text-decoration: none;
-  color: #42b983;
-  font-weight: 600;
+nav a {
+  @apply underline;
 }
 </style>
