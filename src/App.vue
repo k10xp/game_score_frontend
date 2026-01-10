@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld.vue";
 </script>
 
 <template>
@@ -9,4 +9,8 @@ import HelloWorld from './components/HelloWorld.vue'
 </template>
 
 <style scoped>
+p {
+  font-style: italic;
+  color: rgb(175, 175, 255);
+}
 </style>

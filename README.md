@@ -13,3 +13,9 @@ Run vue app
 ```shell
 npm run dev
 ```
+
+Format before run vue app
+
+```shell
+npm run dev1
+```
