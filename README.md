@@ -8,7 +8,7 @@ Format code with prettier
 npm run fmt
 ```
 
-Run react app
+Run vue app
 
 ```shell
 npm run dev
