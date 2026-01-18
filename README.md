@@ -28,3 +28,7 @@ Format before run vue app
 ```shell
 npm run dev1
 ```
+
+## Contributions
+
+All contributions and suggestions welcome. See how you can help in [CONTRIBUTING.md](.github/CONTRIBUTING.md)
