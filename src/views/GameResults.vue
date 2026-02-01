@@ -1,7 +1,11 @@
 <template>
   <div class="outer-scroll overflow-x-auto">
     <div class="games-list main-border modal-static modal-overflow w-max">
-      <h1 class="text-3xl">My Games</h1>
+      <div class="actions-primary flex sm:justify-between items-center gap-6">
+        <h1 class="text-3xl">My Games</h1>
+        <router-link to="/create" class="button primary">New Game</router-link>
+      </div>
+
       <div class="the-table">
         <table class="w-full md:min-w-[600px]">
           <thead>
@@ -43,8 +47,8 @@
           </tbody>
         </table>
       </div>
+      <p v-if="error" class="text-error">{{ error }}</p>
       <div class="actions flex sm:justify-between gap-4 items-center">
-        <router-link to="/create" class="button primary">New Game</router-link>
         <button
           class="button secondary cursor-pointer"
           type="button"
@@ -54,7 +58,7 @@
         </button>
         <Modal :open="isModalOpen" @close="router.push('/results')">
           <!-- This renders the child route (CreateView) inside the modal -->
-          <router-view v-if="isModalOpen" />
+          <router-view v-if="isModalOpen" @match-created="handleMatchCreated" />
         </Modal>
       </div>
     </div>
@@ -66,17 +70,18 @@ import { ref, onMounted, computed, watch, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import { fetchWithFallback } from '@/data/fetch';
-import { matches as mockMatches } from '@/data/mock/matches';
 import { formatDate } from '@/utils/general.ts';
-import type { GetMatch } from '@/data/matchModels';
 import { API_ENDPOINT } from '@/data/consts';
 import Modal from '@/components/Modal.vue';
+import type { GetMatch, BackendMatch } from '@/data/matchModels';
+import { transformMatch } from '@/data/matchModels';
 
 // Constants
 const endpoint = API_ENDPOINT + '/match';
 
 // Refs
 const matches = ref<GetMatch[]>([]);
+const error = ref<string | null>(null);
 
 // Inject
 const showToast = inject<(msg: string) => void>('showToast', () => {});
@@ -93,8 +98,29 @@ watch(isModalOpen, (open) => {
   document.body.style.overflow = open ? 'hidden' : '';
 });
 
+// Methods
+const fetchMatches = async () => {
+  try {
+    error.value = null;
+
+    const response = await fetchWithFallback<BackendMatch[]>(endpoint, []);
+    if (response.length > 0) {
+      matches.value = response.map(transformMatch);
+    } else {
+      error.value = 'No matches found';
+    }
+  } catch (e) {
+    console.error('Error fetching matches:', e);
+    error.value = 'Failed to load matches';
+  }
+};
+
+const handleMatchCreated = () => {
+  fetchMatches();
+};
+
 // Lifecycle
 onMounted(async () => {
-  matches.value = await fetchWithFallback<GetMatch[]>(endpoint, mockMatches);
+  await fetchMatches();
 });
 </script>
