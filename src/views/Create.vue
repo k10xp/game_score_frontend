@@ -5,17 +5,32 @@
       <h2 class="text-2xl sm:text-3xl">New Game</h2>
       <label class="form-label">
         Date
-        <input v-model="form.matchDate" class="text-input" type="date" />
+        <input
+          v-model="form.matchDate"
+          required
+          class="text-input"
+          type="date"
+        />
       </label>
 
       <label class="form-label">
         Home team name
-        <input v-model="form.homeTeam" class="text-input" type="text" />
+        <input
+          v-model="form.homeTeam"
+          required
+          class="text-input"
+          type="text"
+        />
       </label>
 
       <label class="form-label">
         Away team name
-        <input v-model="form.awayTeam" class="text-input" type="text" />
+        <input
+          v-model="form.awayTeam"
+          required
+          class="text-input"
+          type="text"
+        />
       </label>
 
       <label class="form-label">
@@ -24,6 +39,7 @@
           v-model.number="form.homeTeamScore"
           class="text-input"
           type="number"
+          required
         />
       </label>
 
@@ -33,12 +49,12 @@
           v-model.number="form.awayTeamScore"
           class="text-input"
           type="number"
+          required
         />
       </label>
     </div>
 
     <div class="flex flex-col gap-4">
-      <p v-if="statusCode !== null">Status: {{ statusCode }}</p>
       <p v-if="error" class="text-error">
         {{ error }}
       </p>
@@ -56,11 +72,18 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import type { CreateMatch } from '@/data/matchModels';
 import { createMatch } from '@/data/create';
 import { API_ENDPOINT } from '@/data/consts';
 
+// Emits
+const emit = defineEmits<{
+  'match-created': [];
+}>();
+
 // Refs
+const router = useRouter();
 const form = ref<CreateMatch>({
   matchDate: '',
   homeTeam: '',
@@ -70,20 +93,23 @@ const form = ref<CreateMatch>({
 });
 const submitting = ref(false);
 const error = ref<string | null>(null);
-const statusCode = ref<number | null>(null);
 
 // Methods
 const submit = async () => {
   try {
     submitting.value = true;
     error.value = null;
-    statusCode.value = null;
-
     const endpoint = API_ENDPOINT + '/match';
-    const status = await createMatch(endpoint, form.value);
-    statusCode.value = status;
+    await createMatch(endpoint, form.value);
+
+    // Emit event to parent to refetch data
+    emit('match-created');
+
+    // Redirect to results on success
+    router.push('/results');
   } catch (e: any) {
     error.value = e?.message ?? 'Unknown error';
+    console.error('Error creating match:', e);
   } finally {
     submitting.value = false;
   }
