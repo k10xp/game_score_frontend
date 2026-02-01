@@ -3,6 +3,7 @@
 @theme {
   --color-primary: #ed3028;
   --color-secondary: #5c8199;
+  --color-tertiary: #14253f;
   --color-dark: #0c3270;
   --color-light: #ffffff;
   --color-darker: #0c1626;
@@ -164,4 +165,16 @@ table {
 
 .outer-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* Vue transitions */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }

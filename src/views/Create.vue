@@ -56,9 +56,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { CreateMatch } from '../data/matchModels';
-import { createMatch } from '../data/create';
-import { API_ENDPOINT } from '../data/consts';
+import type { CreateMatch } from '@/data/matchModels';
+import { createMatch } from '@/data/create';
+import { API_ENDPOINT } from '@/data/consts';
 
 // Refs
 const form = ref<CreateMatch>({
