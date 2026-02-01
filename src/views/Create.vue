@@ -1,40 +1,4 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import type { CreateMatch } from '../data/matchModels';
-import { createMatch } from '../data/create';
-import { API_ENDPOINT } from '../data/consts';
-
-const form = ref<CreateMatch>({
-  matchDate: '',
-  homeTeam: '',
-  awayTeam: '',
-  homeTeamScore: 0,
-  awayTeamScore: 0,
-});
-
-const submitting = ref(false);
-const error = ref<string | null>(null);
-const statusCode = ref<number | null>(null);
-
-const submit = async () => {
-  try {
-    submitting.value = true;
-    error.value = null;
-    statusCode.value = null;
-
-    const endpoint = API_ENDPOINT + '/match';
-    const status = await createMatch(endpoint, form.value);
-    statusCode.value = status;
-  } catch (e: any) {
-    error.value = e?.message ?? 'Unknown error';
-  } finally {
-    submitting.value = false;
-  }
-};
-</script>
-
 <!-- wrote my own form, replace with something like shadcn -->
-<!-- TODO: remove extra padding above input form -->
 <template>
   <form class="match-form flex flex-col gap-12" @submit.prevent="submit">
     <div class="flex flex-col gap-4">
@@ -89,6 +53,42 @@ const submit = async () => {
     </div>
   </form>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import type { CreateMatch } from '@/data/matchModels';
+import { createMatch } from '@/data/create';
+import { API_ENDPOINT } from '@/data/consts';
+
+// Refs
+const form = ref<CreateMatch>({
+  matchDate: '',
+  homeTeam: '',
+  awayTeam: '',
+  homeTeamScore: 0,
+  awayTeamScore: 0,
+});
+const submitting = ref(false);
+const error = ref<string | null>(null);
+const statusCode = ref<number | null>(null);
+
+// Methods
+const submit = async () => {
+  try {
+    submitting.value = true;
+    error.value = null;
+    statusCode.value = null;
+
+    const endpoint = API_ENDPOINT + '/match';
+    const status = await createMatch(endpoint, form.value);
+    statusCode.value = status;
+  } catch (e: any) {
+    error.value = e?.message ?? 'Unknown error';
+  } finally {
+    submitting.value = false;
+  }
+};
+</script>
 
 <style scoped>
 /* make calendar picker not hidden by black background */

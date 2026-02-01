@@ -4,22 +4,53 @@ import {
   type RouteRecordRaw,
 } from 'vue-router';
 
-import HomeView from '../views/Home.vue';
 import ResultsView from '../views/GameResults.vue';
 import CreateView from '../views/Create.vue';
+import LoginView from '../views/Login.vue';
+import RegisterView from '../views/Register.vue';
+import LogoutView from '../views/Logout.vue';
+import { authenticated } from '@/data/mock/auth';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/results',
+    name: 'Root',
+    component: LoginView,
+    beforeEnter: (_to, _from, next) => {
+      if (authenticated.value) {
+        next('/results');
+      } else {
+        next();
+      }
+    },
   },
   {
-    path: '/',
-    name: 'Home',
-    component: HomeView,
-    props: {
-      welcomeText: 'Hello, World!',
-      descriptionText: 'Create and view game scores',
+    path: '/login',
+    name: 'Login',
+    component: LoginView,
+    beforeEnter: (_to, _from, next) => {
+      if (authenticated.value) {
+        next('/results');
+      } else {
+        next();
+      }
+    },
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: LogoutView,
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterView,
+    beforeEnter: (_to, _from, next) => {
+      if (authenticated.value) {
+        next('/results');
+      } else {
+        next();
+      }
     },
   },
   {
