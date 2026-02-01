@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Root',
     component: LoginView,
-    beforeEnter: (to, from, next) => {
+    beforeEnter: (_to, _from, next) => {
       if (authenticated.value) {
         next('/results');
       } else {
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'Login',
     component: LoginView,
-    beforeEnter: (to, from, next) => {
+    beforeEnter: (_to, _from, next) => {
       if (authenticated.value) {
         next('/results');
       } else {
@@ -45,7 +45,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/register',
     name: 'Register',
     component: RegisterView,
-    beforeEnter: (to, from, next) => {
+    beforeEnter: (_to, _from, next) => {
       if (authenticated.value) {
         next('/results');
       } else {
