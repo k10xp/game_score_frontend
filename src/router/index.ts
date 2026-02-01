@@ -10,6 +10,7 @@ import LoginView from '../views/Login.vue';
 import RegisterView from '../views/Register.vue';
 import LogoutView from '../views/Logout.vue';
 import { authenticated } from '@/data/mock/auth';
+import PublicLeagueView from '../views/PublicLeague.vue'; //no auth required
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -66,6 +67,11 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   { path: '/create', redirect: '/results/create' },
+  {
+    path: '/public-league',
+    name: 'PublicLeague',
+    component: PublicLeagueView,
+  },
 ];
 
 const router = createRouter({
