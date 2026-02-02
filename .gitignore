@@ -27,3 +27,4 @@ dist-ssr
 Prototype/
 Dev/
 Assets/
+!design/template.env
