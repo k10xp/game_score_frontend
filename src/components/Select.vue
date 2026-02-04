@@ -43,7 +43,7 @@ const toggleDropdown = () => {
 };
 
 // callback if you click outside this component
-onClickOutside(selectRef, (event) => {
+onClickOutside(selectRef, (_event) => {
   isOpen.value = false;
 });
 </script>
