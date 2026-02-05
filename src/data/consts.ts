@@ -1,3 +1,1 @@
-//subject to change
-//TODO: use environment variable to avoid redeploy each time
-export const API_ENDPOINT: string = 'http://localhost:8080/api/v1';
+export const API_ENDPOINT: string = import.meta.env.VITE_API_ENDPOINT;

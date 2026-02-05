@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-14 p-10">
-    <div class="flex flex-col gap-6 w-max mx-auto items-center">
+    <div class="flex flex-col gap-6 mx-auto items-center">
       <transition name="fade">
         <Toast v-if="toastMessage" :msg="toastMessage" />
       </transition>

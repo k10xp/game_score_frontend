@@ -58,6 +58,13 @@ table {
   }
 }
 
+label,
+button {
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 .text-input {
   border: 1px solid var(--color-light);
   background: transparent;
@@ -93,6 +100,10 @@ table {
 
 .modal-overflow {
   @apply w-max min-w-[600px];
+}
+
+input[type='checkbox'] {
+  accent-color: var(--color-primary);
 }
 
 .button {
