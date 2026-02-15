@@ -1,4 +1,3 @@
-<!-- wrote my own form, replace with something like shadcn -->
 <template>
   <form class="match-form flex flex-col gap-12" @submit.prevent="submit">
     <div class="flex flex-col gap-4">
@@ -94,13 +93,22 @@ const form = ref<CreateMatch>({
 const submitting = ref(false);
 const error = ref<string | null>(null);
 
+//get from token field in /login response body, store as global variable
+//need for view GameResults too
+const USER_TOKEN = 'PLACEHOLDER';
+
 // Methods
 const submit = async () => {
+  if (!USER_TOKEN) {
+    error.value = 'You must be logged in to create a match.';
+    return;
+  }
+
   try {
     submitting.value = true;
     error.value = null;
     const endpoint = API_ENDPOINT + '/match';
-    await createMatch(endpoint, form.value);
+    await createMatch(endpoint, form.value, USER_TOKEN);
 
     // Emit event to parent to refetch data
     emit('match-created');

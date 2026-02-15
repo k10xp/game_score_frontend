@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { authenticated } from '@/data/mock/auth';
+import { register } from '@/data/auth';
 
 // Refs
 const firstName = ref('');
@@ -83,17 +83,34 @@ const submit = async () => {
     !confirmPassword.value
   ) {
     error.value = 'All fields are required';
-  } else if (password.value !== confirmPassword.value) {
-    error.value = 'Passwords do not match';
-  } else {
-    // Mock registration logic
-    if (username.value === 'user') {
-      error.value = 'Username already taken';
-    } else {
-      if (authenticated.value) router.push('/results');
-    }
+    submitting.value = false;
+    return;
   }
 
-  submitting.value = false;
+  if (password.value !== confirmPassword.value) {
+    error.value = 'Passwords do not match';
+    submitting.value = false;
+    return;
+  }
+
+  try {
+    const result = await register(
+      firstName.value,
+      lastName.value,
+      username.value,
+      password.value
+    );
+
+    if (result.success) {
+      router.push('/results');
+    } else {
+      error.value = result.error || 'Registration failed';
+    }
+  } catch (e) {
+    console.error('Registration error:', e);
+    error.value = 'An unexpected error occurred';
+  } finally {
+    submitting.value = false;
+  }
 };
 </script>

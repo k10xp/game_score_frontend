@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '@/data/mock/auth';
+import { login } from '@/data/auth';
 
 // Refs
 const username = ref('');
@@ -44,13 +44,20 @@ const router = useRouter();
 const submit = async () => {
   error.value = null;
   submitting.value = true;
-  // Mock login logic
-  if (username.value === 'user' && password.value === 'pass') {
-    login();
-    router.push('/results');
-  } else {
-    error.value = 'Invalid username or password';
+
+  try {
+    const result = await login(username.value, password.value);
+
+    if (result.success) {
+      router.push('/results');
+    } else {
+      error.value = result.error || 'Login failed';
+    }
+  } catch (e) {
+    console.error('Login error:', e);
+    error.value = 'An unexpected error occurred';
+  } finally {
+    submitting.value = false;
   }
-  submitting.value = false;
 };
 </script>

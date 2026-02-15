@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { logout } from '@/data/mock/auth';
+import { logout } from '@/data/auth';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

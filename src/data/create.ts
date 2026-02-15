@@ -2,12 +2,14 @@ import type { CreateMatch } from '../data/matchModels';
 
 export async function createMatch(
   url: string,
-  payload: CreateMatch
+  payload: CreateMatch,
+  token: string
 ): Promise<number> {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
   });

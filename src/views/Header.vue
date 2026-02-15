@@ -8,8 +8,8 @@
       />
     </router-link>
     <div class="links flex gap-4 w-full flex-wrap justify-center">
+      <router-link to="/public-league">Public League</router-link>
       <template v-if="authenticated">
-        <router-link to="/public-league">Public League</router-link>
         <router-link to="/results">Games</router-link>
         <router-link to="/results/create">New Game</router-link>
         <router-link to="/logout">Logout</router-link>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { authenticated } from '@/data/mock/auth';
+import { authenticated } from '@/data/auth';
 </script>
 
 <style scoped>

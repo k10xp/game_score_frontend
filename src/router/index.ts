@@ -9,8 +9,8 @@ import CreateView from '../views/Create.vue';
 import LoginView from '../views/Login.vue';
 import RegisterView from '../views/Register.vue';
 import LogoutView from '../views/Logout.vue';
-import { authenticated } from '@/data/mock/auth';
-import PublicLeagueView from '../views/PublicLeague.vue'; //no auth required
+import { authenticated } from '@/data/auth';
+import PublicLeagueView from '../views/PublicLeague.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -58,6 +58,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/results',
     name: 'Results',
     component: ResultsView,
+    beforeEnter: (_to, _from, next) => {
+      if (authenticated.value) {
+        next();
+      } else {
+        next('/login');
+      }
+    },
     children: [
       {
         path: 'create',
