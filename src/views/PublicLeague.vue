@@ -123,13 +123,13 @@
         </table>
       </div>
 
-      <!-- bar chart, goals per team -->
-      <section v-if="visibleMatches.length" class="mt-8">
-        <h2 class="text-2xl mb-2">Goals per team</h2>
+      <!-- bar chart, points per team -->
+      <section v-if="visibleMatches.length" class="mt-1">
+        <h2 class="text-2xl mb-2">Total points per team</h2>
 
         <VuePlotly
-          :data="goalsBarData"
-          :layout="goalsBarLayout"
+          :data="pointsBarData"
+          :layout="pointsBarLayout"
           class="w-full max-w-xl"
         />
       </section>
@@ -162,8 +162,8 @@ const visibleMatches = computed(() => {
 });
 
 //bar chart logic
-const goalsBarData = computed<any[]>(() => {
-  const goalsByTeam: Record<string, number> = {};
+const pointsBarData = computed<any[]>(() => {
+  const pointsByTeam: Record<string, number> = {};
 
   for (const m of visibleMatches.value) {
     const homeTeam = m.homeTeam;
@@ -171,28 +171,28 @@ const goalsBarData = computed<any[]>(() => {
     const homeScore = Number(m.homeScore || 0);
     const awayScore = Number(m.awayScore || 0);
 
-    goalsByTeam[homeTeam] = (goalsByTeam[homeTeam] || 0) + homeScore;
-    goalsByTeam[awayTeam] = (goalsByTeam[awayTeam] || 0) + awayScore;
+    pointsByTeam[homeTeam] = (pointsByTeam[homeTeam] || 0) + homeScore;
+    pointsByTeam[awayTeam] = (pointsByTeam[awayTeam] || 0) + awayScore;
   }
 
-  const teams = Object.keys(goalsByTeam);
-  const goals = teams.map((t) => goalsByTeam[t]);
+  const teams = Object.keys(pointsByTeam);
+  const points = teams.map((t) => pointsByTeam[t]);
 
   return [
     {
       type: 'bar',
       x: teams,
-      y: goals,
+      y: points,
       marker: { color: '#3b82f6' },
     },
   ];
 });
 
 //TODO: don't use any type
-const goalsBarLayout: any = {
-  title: 'Total goals per team',
+const pointsBarLayout: any = {
+  title: 'Total points per team',
   xaxis: { title: 'Team' },
-  yaxis: { title: 'Goals' },
+  yaxis: { title: 'Points' },
   margin: { t: 40, r: 10, b: 60, l: 50 },
   height: 360,
 };

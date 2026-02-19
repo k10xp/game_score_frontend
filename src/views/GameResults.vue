@@ -9,28 +9,61 @@
       </div>
 
       <!-- figures start, sorted wins descending -->
-      <div v-if="matches.length" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p class="text-lg font-semibold text-blue-800">Interactive: hover over figures to explore</p>
+      <div
+        v-if="matches.length"
+        class="mb-1 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+      >
+        <p class="text-lg font-semibold text-blue-800">
+          Interactive: hover over figures to explore
+        </p>
       </div>
 
-      <!-- win/loss bar chart -->
-      <section v-if="matches.length" class="mb-8">
-        <h2 class="text-2xl mb-4">Wins & Losses per Team</h2>
-        <VuePlotly
-          :data="winsLossesData"
-          :layout="winsLossesLayout"
-          class="w-full max-w-xl"
-        />
-      </section>
+      <!-- tab container -->
+      <section v-if="matches.length" class="mb-1">
+        <div class="tabs flex border-b border-gray-200 mb-4">
+          <button
+            @click="activeTab = 'wins'"
+            :class="[
+              'tab-btn px-6 py-2 text-lg font-medium border-b-2 transition-colors duration-200',
+              activeTab === 'wins'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+            ]"
+          >
+            Wins & Losses
+          </button>
+          <button
+            @click="activeTab = 'points'"
+            :class="[
+              'tab-btn px-6 py-2 text-lg font-medium border-b-2 transition-colors duration-200',
+              activeTab === 'points'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+            ]"
+          >
+            Points per Team
+          </button>
+        </div>
 
-      <!-- points per team -->
-      <section v-if="matches.length" class="mb-8">
-        <h2 class="text-2xl mb-4">Points per Team</h2>
-        <VuePlotly
-          :data="pointsData"
-          :layout="pointsLayout"
-          class="w-full max-w-xl"
-        />
+        <!-- wins/losses -->
+        <div v-show="activeTab === 'wins'" class="chart-container">
+          <h2 class="text-2xl mb-4">Wins & Losses per Team</h2>
+          <VuePlotly
+            :data="winsLossesData"
+            :layout="winsLossesLayout"
+            class="w-full max-w-xl"
+          />
+        </div>
+
+        <!-- total points -->
+        <div v-show="activeTab === 'points'" class="chart-container">
+          <h2 class="text-2xl mb-4">Points per Team</h2>
+          <VuePlotly
+            :data="pointsData"
+            :layout="pointsLayout"
+            class="w-full max-w-xl"
+          />
+        </div>
       </section>
 
       <div class="the-table">
@@ -74,7 +107,7 @@
           </tbody>
         </table>
       </div>
-      
+
       <p v-if="error" class="text-error">{{ error }}</p>
       <div class="actions flex sm:justify-between gap-4 items-center">
         <button
@@ -110,6 +143,7 @@ const endpoint = API_ENDPOINT + '/match';
 // Refs
 const matches = ref<GetMatch[]>([]);
 const error = ref<string | null>(null);
+const activeTab = ref<'wins' | 'points'>('wins'); // NEW: Tab state
 
 // Inject
 const showToast = inject<(msg: string) => void>('showToast', () => {});
@@ -145,29 +179,31 @@ const winsLossesData = computed<any[]>(() => {
   }
 
   //win difference for sort
-  const teamStats = Object.keys({ ...winsByTeam, ...lossesByTeam }).map((team) => ({
-    team,
-    wins: winsByTeam[team] || 0,
-    losses: lossesByTeam[team] || 0,
-    diff: (winsByTeam[team] || 0) - (lossesByTeam[team] || 0)
-  }));
+  const teamStats = Object.keys({ ...winsByTeam, ...lossesByTeam }).map(
+    (team) => ({
+      team,
+      wins: winsByTeam[team] || 0,
+      losses: lossesByTeam[team] || 0,
+      diff: (winsByTeam[team] || 0) - (lossesByTeam[team] || 0),
+    })
+  );
 
   const sortedTeams = teamStats.sort((a, b) => b.diff - a.diff);
-  const teams = sortedTeams.map(stat => stat.team);
-  
+  const teams = sortedTeams.map((stat) => stat.team);
+
   return [
     {
       type: 'bar',
       name: 'Wins',
       x: teams,
-      y: sortedTeams.map(stat => stat.wins),
+      y: sortedTeams.map((stat) => stat.wins),
       marker: { color: '#10b981' }, // green
     },
     {
       type: 'bar',
       name: 'Losses',
       x: teams,
-      y: sortedTeams.map(stat => -stat.losses), // negative values
+      y: sortedTeams.map((stat) => -stat.losses), // negative values
       marker: { color: '#ef4444' }, // red
     },
   ];
@@ -176,12 +212,12 @@ const winsLossesData = computed<any[]>(() => {
 const winsLossesLayout: any = {
   title: 'Wins vs Losses per Team (sorted by win diff)',
   xaxis: { title: 'Team' },
-  yaxis: { 
+  yaxis: {
     title: 'Wins (+)/Losses (-)',
     zeroline: true,
     zerolinecolor: '#000',
     zerolinewidth: 2,
-    gridcolor: '#f0f0f0'
+    gridcolor: '#f0f0f0',
   },
   barmode: 'group',
   margin: { t: 40, r: 10, b: 60, l: 70 },
@@ -210,13 +246,15 @@ const pointsData = computed<any[]>(() => {
   }
 
   //most to least points
-  const teamStats = Object.entries(pointsByTeam).map(([team, points]) => ({
-    team,
-    points
-  })).sort((a, b) => b.points - a.points);
+  const teamStats = Object.entries(pointsByTeam)
+    .map(([team, points]) => ({
+      team,
+      points,
+    }))
+    .sort((a, b) => b.points - a.points);
 
-  const teams = teamStats.map(stat => stat.team);
-  const points = teamStats.map(stat => stat.points);
+  const teams = teamStats.map((stat) => stat.team);
+  const points = teamStats.map((stat) => stat.points);
 
   return [
     {
@@ -275,3 +313,20 @@ onMounted(async () => {
   await fetchMatches();
 });
 </script>
+
+<style scoped>
+.chart-container {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
