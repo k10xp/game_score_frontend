@@ -122,6 +122,17 @@
           </tbody>
         </table>
       </div>
+
+      <!-- bar chart, goals per team -->
+      <section v-if="visibleMatches.length" class="mt-8">
+        <h2 class="text-2xl mb-2">Goals per team</h2>
+
+        <VuePlotly
+          :data="goalsBarData"
+          :layout="goalsBarLayout"
+          class="w-full max-w-xl"
+        />
+      </section>
     </div>
   </div>
 </template>
@@ -133,22 +144,16 @@ import { formatDate } from '@/utils/general';
 import { matches as mockMatches } from '@/data/mock/matches';
 import Select from '@/components/Select.vue';
 
-// Constants
 const availableTeams = ['Team A', 'Team B', 'Team C', 'Team D'];
 
-// Refs
 const info = ref<unknown | null>(null);
 const matches = ref<any[]>(mockMatches);
 const filteredMatches = ref<any[]>([]);
 const selectedTeams = ref<string[]>([]);
 const filterError = ref<string | null>(null);
 
-//filter cleared flag
-const isFilterCleared = computed(() => {
-  return selectedTeams.value.length === 0;
-});
+const isFilterCleared = computed(() => selectedTeams.value.length === 0);
 
-// filtered results
 const visibleMatches = computed(() => {
   if (!isFilterCleared.value) {
     return filteredMatches.value;
@@ -156,7 +161,42 @@ const visibleMatches = computed(() => {
   return matches.value;
 });
 
-// Load all public‑league matches
+//bar chart logic
+const goalsBarData = computed<any[]>(() => {
+  const goalsByTeam: Record<string, number> = {};
+
+  for (const m of visibleMatches.value) {
+    const homeTeam = m.homeTeam;
+    const awayTeam = m.awayTeam;
+    const homeScore = Number(m.homeScore || 0);
+    const awayScore = Number(m.awayScore || 0);
+
+    goalsByTeam[homeTeam] = (goalsByTeam[homeTeam] || 0) + homeScore;
+    goalsByTeam[awayTeam] = (goalsByTeam[awayTeam] || 0) + awayScore;
+  }
+
+  const teams = Object.keys(goalsByTeam);
+  const goals = teams.map((t) => goalsByTeam[t]);
+
+  return [
+    {
+      type: 'bar',
+      x: teams,
+      y: goals,
+      marker: { color: '#3b82f6' },
+    },
+  ];
+});
+
+//TODO: don't use any type
+const goalsBarLayout: any = {
+  title: 'Total goals per team',
+  xaxis: { title: 'Team' },
+  yaxis: { title: 'Goals' },
+  margin: { t: 40, r: 10, b: 60, l: 50 },
+  height: 360,
+};
+
 async function loadMatches() {
   const res = await fetch(`${API_ENDPOINT}/public-league/matches`);
   if (!res.ok) return;
@@ -173,7 +213,6 @@ async function applyFilter() {
   filterError.value = null;
   filteredMatches.value = [];
 
-  // reload all matches when changed
   if (isFilterCleared.value) {
     await loadMatches();
     return;
