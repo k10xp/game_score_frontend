@@ -12,6 +12,12 @@
       <template v-if="authenticated">
         <router-link to="/results">Games</router-link>
         <router-link to="/results/create">New Game</router-link>
+        <router-link
+      v-if="currentUser?.role === 'admin'"
+      to="/admin"
+    >
+      Admin
+    </router-link>
       </template>
       <template v-else>
         <router-link to="/login">Login</router-link>
