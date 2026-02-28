@@ -9,15 +9,13 @@
       </div>
 
       <!-- tab container -->
-      <section v-if="matches.length" class="mb-1">
-        <div class="tabs flex border-b border-gray-200 mb-4">
+      <section v-if="matches.length">
+        <div class="tabs flex border-b border-gray-200 mb-6">
           <button
             @click="activeTab = 'wins'"
             :class="[
-              'tab-btn px-6 py-2 text-lg font-medium border-b-2 transition-colors duration-200',
-              activeTab === 'wins'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'tab-btn px-6 py-2 text-lg font-medium transition-colors duration-200',
+              activeTab === 'wins' ? ' text-light' : ' text-light/50 ',
             ]"
           >
             Wins & Losses
@@ -25,10 +23,8 @@
           <button
             @click="activeTab = 'points'"
             :class="[
-              'tab-btn px-6 py-2 text-lg font-medium border-b-2 transition-colors duration-200',
-              activeTab === 'points'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'tab-btn px-6 py-2 text-lg font-medium transition-colors duration-200',
+              activeTab === 'points' ? ' text-light' : ' text-light/50 ',
             ]"
           >
             Points per Team
@@ -36,8 +32,7 @@
         </div>
 
         <!-- wins/losses -->
-        <div v-show="activeTab === 'wins'" class="chart-container">
-          <h2 class="text-2xl mb-4">Wins & Losses per Team</h2>
+        <div v-show="activeTab === 'wins'" class="chart-bg chart-container">
           <Bar
             :data="winsLossesChartData"
             :options="winsLossesOptions"
@@ -46,8 +41,7 @@
         </div>
 
         <!-- total points -->
-        <div v-show="activeTab === 'points'" class="chart-container">
-          <h2 class="text-2xl mb-4">Points per Team</h2>
+        <div v-show="activeTab === 'points'" class="chart-bg chart-container">
           <Bar
             :data="pointsChartData"
             :options="pointsOptions"
@@ -55,6 +49,7 @@
           />
         </div>
       </section>
+      <hr />
 
       <div class="the-table">
         <table class="w-full md:min-w-[600px]">
@@ -267,7 +262,7 @@ const pointsChartData = computed(() => {
       {
         label: 'Points',
         data: teamStats.map((stat) => stat.points),
-        backgroundColor: '#3b82f6',
+        backgroundColor: '#ffffff',
       },
     ],
   };
