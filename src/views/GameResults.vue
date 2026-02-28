@@ -8,6 +8,9 @@
         <router-link to="/create" class="button primary">New Game</router-link>
       </div>
 
+      <GameResultsChart v-if="matches.length" :matches="matches" />
+      <hr />
+
       <div class="the-table">
         <table class="w-full md:min-w-[600px]">
           <thead>
@@ -49,6 +52,7 @@
           </tbody>
         </table>
       </div>
+
       <p v-if="error" class="text-error">{{ error }}</p>
       <div class="actions flex sm:justify-between gap-4 items-center">
         <button
@@ -59,7 +63,6 @@
           Mock Toast
         </button>
         <Modal :open="isModalOpen" @close="router.push('/results')">
-          <!-- This renders the child route (CreateView) inside the modal -->
           <router-view v-if="isModalOpen" @match-created="handleMatchCreated" />
         </Modal>
       </div>
@@ -70,8 +73,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-
 import { fetchWithFallback } from '@/data/fetch';
+import GameResultsChart from '@/components/charts/GameResultsChart.vue';
 import { formatDate } from '@/utils/general.ts';
 import { API_ENDPOINT } from '@/data/consts';
 import Modal from '@/components/Modal.vue';
@@ -85,7 +88,6 @@ const endpoint = API_ENDPOINT + '/match';
 // Refs
 const matches = ref<GetMatch[]>([]);
 const error = ref<string | null>(null);
-
 // Inject
 const showToast = inject<(msg: string) => void>('showToast', () => {});
 

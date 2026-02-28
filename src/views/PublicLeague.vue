@@ -122,6 +122,12 @@
           </tbody>
         </table>
       </div>
+
+      <!-- bar chart, points per team -->
+      <PublicLeagueChart
+        v-if="visibleMatches.length"
+        :matches="visibleMatches"
+      />
     </div>
   </div>
 </template>
@@ -132,23 +138,18 @@ import { API_ENDPOINT } from '@/data/consts';
 import { formatDate } from '@/utils/general';
 import { matches as mockMatches } from '@/data/mock/matches';
 import Select from '@/components/Select.vue';
+import PublicLeagueChart from '@/components/charts/PublicLeagueChart.vue';
 
-// Constants
 const availableTeams = ['Team A', 'Team B', 'Team C', 'Team D'];
 
-// Refs
 const info = ref<unknown | null>(null);
 const matches = ref<any[]>(mockMatches);
 const filteredMatches = ref<any[]>([]);
 const selectedTeams = ref<string[]>([]);
 const filterError = ref<string | null>(null);
 
-//filter cleared flag
-const isFilterCleared = computed(() => {
-  return selectedTeams.value.length === 0;
-});
+const isFilterCleared = computed(() => selectedTeams.value.length === 0);
 
-// filtered results
 const visibleMatches = computed(() => {
   if (!isFilterCleared.value) {
     return filteredMatches.value;
@@ -156,7 +157,6 @@ const visibleMatches = computed(() => {
   return matches.value;
 });
 
-// Load all public‑league matches
 async function loadMatches() {
   const res = await fetch(`${API_ENDPOINT}/public-league/matches`);
   if (!res.ok) return;
@@ -173,7 +173,6 @@ async function applyFilter() {
   filterError.value = null;
   filteredMatches.value = [];
 
-  // reload all matches when changed
   if (isFilterCleared.value) {
     await loadMatches();
     return;
