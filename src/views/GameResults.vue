@@ -8,16 +8,6 @@
         <router-link to="/create" class="button primary">New Game</router-link>
       </div>
 
-      <!-- figures start, sorted wins descending -->
-      <div
-        v-if="matches.length"
-        class="mb-1 p-4 bg-blue-50 border border-blue-200 rounded-lg"
-      >
-        <p class="text-lg font-semibold text-blue-800">
-          Interactive: hover over figures to explore
-        </p>
-      </div>
-
       <!-- tab container -->
       <section v-if="matches.length" class="mb-1">
         <div class="tabs flex border-b border-gray-200 mb-4">
@@ -48,9 +38,9 @@
         <!-- wins/losses -->
         <div v-show="activeTab === 'wins'" class="chart-container">
           <h2 class="text-2xl mb-4">Wins & Losses per Team</h2>
-          <VuePlotly
-            :data="winsLossesData"
-            :layout="winsLossesLayout"
+          <Bar
+            :data="winsLossesChartData"
+            :options="winsLossesOptions"
             class="w-full max-w-xl"
           />
         </div>
@@ -58,9 +48,9 @@
         <!-- total points -->
         <div v-show="activeTab === 'points'" class="chart-container">
           <h2 class="text-2xl mb-4">Points per Team</h2>
-          <VuePlotly
-            :data="pointsData"
-            :layout="pointsLayout"
+          <Bar
+            :data="pointsChartData"
+            :options="pointsOptions"
             class="w-full max-w-xl"
           />
         </div>
@@ -128,6 +118,25 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { Bar } from 'vue-chartjs';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from 'chart.js';
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
 
 import { fetchWithFallback } from '@/data/fetch';
 import { formatDate } from '@/utils/general.ts';
@@ -156,7 +165,7 @@ const route = useRoute();
 const isModalOpen = computed(() => route.name === 'Create');
 
 // win/loss
-const winsLossesData = computed<any[]>(() => {
+const winsLossesChartData = computed(() => {
   const winsByTeam: Record<string, number> = {};
   const lossesByTeam: Record<string, number> = {};
 
@@ -178,7 +187,7 @@ const winsLossesData = computed<any[]>(() => {
     // Draws don't count as wins/losses
   }
 
-  //win difference for sort
+  // win difference for sort
   const teamStats = Object.keys({ ...winsByTeam, ...lossesByTeam }).map(
     (team) => ({
       team,
@@ -189,43 +198,45 @@ const winsLossesData = computed<any[]>(() => {
   );
 
   const sortedTeams = teamStats.sort((a, b) => b.diff - a.diff);
-  const teams = sortedTeams.map((stat) => stat.team);
+  const labels = sortedTeams.map((stat) => stat.team);
 
-  return [
-    {
-      type: 'bar',
-      name: 'Wins',
-      x: teams,
-      y: sortedTeams.map((stat) => stat.wins),
-      marker: { color: '#10b981' }, // green
-    },
-    {
-      type: 'bar',
-      name: 'Losses',
-      x: teams,
-      y: sortedTeams.map((stat) => -stat.losses), // negative values
-      marker: { color: '#ef4444' }, // red
-    },
-  ];
+  return {
+    labels,
+    datasets: [
+      {
+        label: 'Wins',
+        data: sortedTeams.map((stat) => stat.wins),
+        backgroundColor: '#10b981',
+      },
+      {
+        label: 'Losses',
+        data: sortedTeams.map((stat) => -stat.losses), // negative values
+        backgroundColor: '#ef4444',
+      },
+    ],
+  };
 });
 
-const winsLossesLayout: any = {
-  title: 'Wins vs Losses per Team (sorted by win diff)',
-  xaxis: { title: 'Team' },
-  yaxis: {
-    title: 'Wins (+)/Losses (-)',
-    zeroline: true,
-    zerolinecolor: '#000',
-    zerolinewidth: 2,
-    gridcolor: '#f0f0f0',
+const winsLossesOptions = {
+  responsive: true,
+  plugins: {
+    legend: { position: 'top' as const },
+    title: {
+      display: true,
+      text: 'Wins vs Losses per Team (sorted by win diff)',
+    },
   },
-  barmode: 'group',
-  margin: { t: 40, r: 10, b: 60, l: 70 },
-  height: 400,
+  scales: {
+    x: { title: { display: true, text: 'Team' } },
+    y: {
+      title: { display: true, text: 'Wins (+) / Losses (-)' },
+      grid: { color: '#f0f0f0' },
+    },
+  },
 };
 
 // total points per team
-const pointsData = computed<any[]>(() => {
+const pointsChartData = computed(() => {
   const pointsByTeam: Record<string, number> = {};
 
   for (const match of matches.value) {
@@ -245,33 +256,39 @@ const pointsData = computed<any[]>(() => {
     }
   }
 
-  //most to least points
+  // most to least points
   const teamStats = Object.entries(pointsByTeam)
-    .map(([team, points]) => ({
-      team,
-      points,
-    }))
+    .map(([team, points]) => ({ team, points }))
     .sort((a, b) => b.points - a.points);
 
-  const teams = teamStats.map((stat) => stat.team);
-  const points = teamStats.map((stat) => stat.points);
-
-  return [
-    {
-      type: 'bar',
-      x: teams,
-      y: points,
-      marker: { color: '#3b82f6' }, // blue
-    },
-  ];
+  return {
+    labels: teamStats.map((stat) => stat.team),
+    datasets: [
+      {
+        label: 'Points',
+        data: teamStats.map((stat) => stat.points),
+        backgroundColor: '#3b82f6',
+      },
+    ],
+  };
 });
 
-const pointsLayout: any = {
-  title: 'Total Points per Team (Win=3, Draw=1) - sorted by points',
-  xaxis: { title: 'Team' },
-  yaxis: { title: 'Points' },
-  margin: { t: 50, r: 10, b: 60, l: 50 },
-  height: 400,
+const pointsOptions = {
+  responsive: true,
+  plugins: {
+    legend: { position: 'top' as const },
+    title: {
+      display: true,
+      text: 'Total Points per Team - sorted by points',
+    },
+  },
+  scales: {
+    x: { title: { display: true, text: 'Team' } },
+    y: {
+      beginAtZero: true,
+      title: { display: true, text: 'Points' },
+    },
+  },
 };
 
 // Watchers
