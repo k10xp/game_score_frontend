@@ -124,51 +124,23 @@
       </div>
 
       <!-- bar chart, points per team -->
-      <section v-if="visibleMatches.length" class="chart-bg points-per-team">
-        <Bar
-          :data="pointsBarData"
-          :options="pointsBarOptions"
-          class="w-full max-w-xl"
-        />
-      </section>
+      <PublicLeagueChart
+        v-if="visibleMatches.length"
+        :matches="visibleMatches"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { Bar } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from 'chart.js';
 import { API_ENDPOINT } from '@/data/consts';
 import { formatDate } from '@/utils/general';
 import { matches as mockMatches } from '@/data/mock/matches';
 import Select from '@/components/Select.vue';
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
+import PublicLeagueChart from '@/components/charts/PublicLeagueChart.vue';
 
 const availableTeams = ['Team A', 'Team B', 'Team C', 'Team D'];
-
-const teamColors: Record<string, string> = {
-  'Team A': '#f9fafb',
-  'Team B': '#9ca3af',
-  'Team C': '#4b5563',
-  'Team D': '#111827',
-};
 
 const info = ref<unknown | null>(null);
 const matches = ref<any[]>(mockMatches);
@@ -184,46 +156,6 @@ const visibleMatches = computed(() => {
   }
   return matches.value;
 });
-
-// bar chart logic
-const pointsBarData = computed(() => {
-  const pointsByTeam: Record<string, number> = {};
-
-  for (const m of visibleMatches.value) {
-    const homeTeam = m.homeTeam;
-    const awayTeam = m.awayTeam;
-    const homeScore = Number(m.homeScore || 0);
-    const awayScore = Number(m.awayScore || 0);
-
-    pointsByTeam[homeTeam] = (pointsByTeam[homeTeam] || 0) + homeScore;
-    pointsByTeam[awayTeam] = (pointsByTeam[awayTeam] || 0) + awayScore;
-  }
-
-  const teams = Object.keys(pointsByTeam);
-
-  return {
-    labels: teams,
-    datasets: [
-      {
-        label: 'Points',
-        data: teams.map((t) => pointsByTeam[t] ?? 0),
-        backgroundColor: teams.map((t) => teamColors[t] ?? '#94a3b8'),
-      },
-    ],
-  };
-});
-
-const pointsBarOptions = {
-  responsive: true,
-  plugins: {
-    legend: { position: 'top' as const },
-    title: { display: true, text: 'Total points per team' },
-  },
-  scales: {
-    x: { title: { display: true, text: 'Team' } },
-    y: { beginAtZero: true, title: { display: true, text: 'Points' } },
-  },
-};
 
 async function loadMatches() {
   const res = await fetch(`${API_ENDPOINT}/public-league/matches`);

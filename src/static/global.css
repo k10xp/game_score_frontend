@@ -176,6 +176,10 @@ input[type='checkbox'] {
 
 /* Charts */
 
+.chart-container {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
 .chart-bg {
   background: hsl(from var(--color-tertiary) h s calc(l - 10));
   padding: 2rem;
@@ -184,6 +188,19 @@ input[type='checkbox'] {
 
 .outer-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* Keyframes */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Vue transitions */
