@@ -123,16 +123,8 @@
         </table>
       </div>
 
-      <!-- bar chart, points per team -->
-      <section v-if="visibleMatches.length" class="mt-1">
-        <h2 class="text-2xl mb-2">Total points per team</h2>
-
-        <VuePlotly
-          :data="pointsBarData"
-          :layout="pointsBarLayout"
-          class="w-full max-w-xl"
-        />
-      </section>
+      <!-- bar chart component, points per team -->
+      <PublicLeagueFigures :matches="matches"/>
     </div>
   </div>
 </template>
@@ -143,6 +135,7 @@ import { API_ENDPOINT } from '@/data/consts';
 import { formatDate } from '@/utils/general';
 import { matches as mockMatches } from '@/data/mock/matches';
 import Select from '@/components/Select.vue';
+import PublicLeagueFigures from '@/components/PublicLeagueFigures.vue';
 
 const availableTeams = ['Team A', 'Team B', 'Team C', 'Team D'];
 
@@ -160,42 +153,6 @@ const visibleMatches = computed(() => {
   }
   return matches.value;
 });
-
-//bar chart logic
-const pointsBarData = computed<any[]>(() => {
-  const pointsByTeam: Record<string, number> = {};
-
-  for (const m of visibleMatches.value) {
-    const homeTeam = m.homeTeam;
-    const awayTeam = m.awayTeam;
-    const homeScore = Number(m.homeScore || 0);
-    const awayScore = Number(m.awayScore || 0);
-
-    pointsByTeam[homeTeam] = (pointsByTeam[homeTeam] || 0) + homeScore;
-    pointsByTeam[awayTeam] = (pointsByTeam[awayTeam] || 0) + awayScore;
-  }
-
-  const teams = Object.keys(pointsByTeam);
-  const points = teams.map((t) => pointsByTeam[t]);
-
-  return [
-    {
-      type: 'bar',
-      x: teams,
-      y: points,
-      marker: { color: '#3b82f6' },
-    },
-  ];
-});
-
-//TODO: don't use any type
-const pointsBarLayout: any = {
-  title: 'Total points per team',
-  xaxis: { title: 'Team' },
-  yaxis: { title: 'Points' },
-  margin: { t: 40, r: 10, b: 60, l: 50 },
-  height: 360,
-};
 
 async function loadMatches() {
   const res = await fetch(`${API_ENDPOINT}/public-league/matches`);

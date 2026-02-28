@@ -80,7 +80,7 @@ import Modal from '@/components/Modal.vue';
 import type { GetMatch, BackendMatch } from '@/data/matchModels';
 import { transformMatch } from '@/data/matchModels';
 import { getAuthToken } from '@/data/auth';
-import GameResultsFigures from './GameResultsFigures.vue';
+import GameResultsFigures from '../components/GameResultsFigures.vue';
 import { formatDate } from '@/utils/general';
 
 // Constants
