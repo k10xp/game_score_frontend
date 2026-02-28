@@ -124,7 +124,7 @@
       </div>
 
       <!-- bar chart component, points per team -->
-      <PublicLeagueFigures :matches="matches"/>
+      <PublicLeagueFigures :matches="matches" />
     </div>
   </div>
 </template>
@@ -134,8 +134,8 @@ import { ref, onMounted, computed } from 'vue';
 import { API_ENDPOINT } from '@/data/consts';
 import { formatDate } from '@/utils/general';
 import { matches as mockMatches } from '@/data/mock/matches';
-import Select from '@/components/Select.vue';
-import PublicLeagueFigures from '@/components/PublicLeagueFigures.vue';
+import Select from '@/components/ui/Select.vue';
+import PublicLeagueFigures from '@/components/figures/PublicLeagueFigures.vue';
 
 const availableTeams = ['Team A', 'Team B', 'Team C', 'Team D'];
 

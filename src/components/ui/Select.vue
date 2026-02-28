@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { onClickOutside } from '@vueuse/core';
-import Icon from '@/components/Icon.vue';
+import Icon from '@/components/layout/Icon.vue';
 
 const selectRef = ref<HTMLElement | null>(null);
 

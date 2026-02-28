@@ -76,11 +76,11 @@ import { useRouter, useRoute } from 'vue-router';
 
 import { fetchWithFallback } from '@/data/fetch';
 import { API_ENDPOINT } from '@/data/consts';
-import Modal from '@/components/Modal.vue';
+import Modal from '@/components/ui/Modal.vue';
 import type { GetMatch, BackendMatch } from '@/data/matchModels';
 import { transformMatch } from '@/data/matchModels';
 import { getAuthToken } from '@/data/auth';
-import GameResultsFigures from '../components/GameResultsFigures.vue';
+import GameResultsFigures from '../components/figures/GameResultsFigures.vue';
 import { formatDate } from '@/utils/general';
 
 // Constants

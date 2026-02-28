@@ -4,13 +4,13 @@ import {
   type RouteRecordRaw,
 } from 'vue-router';
 
-import ResultsView from '../views/GameResults.vue';
-import CreateView from '../views/Create.vue';
-import LoginView from '../views/Login.vue';
-import RegisterView from '../views/Register.vue';
-import LogoutView from '../views/Logout.vue';
+import ResultsView from '@/views/GameResults.vue';
+import CreateView from '@/components/ui/Create.vue';
+import LoginView from '@/components/ui/Login.vue';
+import RegisterView from '@/components/ui/Register.vue';
+import LogoutView from '@/components/ui/Logout.vue';
 import { authenticated } from '@/data/auth';
-import PublicLeagueView from '../views/PublicLeague.vue';
+import PublicLeagueView from '@/views/PublicLeague.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
