@@ -1,37 +1,46 @@
 <template>
-  <div class="wrapper p-6 max-w-6xl mx-auto">
-    <div class="main-border p-6 rounded">
-      <!-- Heading -->
-      <h1 class="mb-6">User Panel</h1>
+  <div class="outer-scroll overflow-x-auto">
+    <div
+      class="public-league main-border modal-static modal-overflow w-max min-h-100"
+    >
+      <div
+        class="flex flex-col sm:flex-row sm:justify-between items-start gap-4"
+      >
+        <!-- Heading -->
+        <div class="flex flex-col gap-2">
+          <h1 class="text-3xl">Admin</h1>
+          <p class="text-light/50">Choose a user to edit or delete.</p>
+        </div>
 
-      <!-- Error -->
-      <div v-if="error" class="mb-4 p-3 rounded border text-error border-error">
-        {{ error }}
-      </div>
+        <!-- Top Controls -->
+        <div class="flex flex-col md:flex-row justify-between gap-4">
+          <div class="flex gap-3">
+            <button
+              class="button secondary capitalize"
+              :disabled="!selectedUser"
+              @click="toggleRole"
+            >
+              {{ selectedUser ? `Make ${nextRole}` : 'Select user' }}
+            </button>
 
-      <!-- Top Controls -->
-      <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
-        <div class="flex gap-3">
-          <button
-            class="button secondary capitalize"
-            :disabled="!selectedUser"
-            @click="toggleRole"
-          >
-            {{ selectedUser ? `Make ${nextRole}` : 'Select user' }}
-          </button>
-
-          <button
-            class="button primary"
-            :disabled="!selectedUser"
-            @click="deleteUser"
-          >
-            Delete User
-          </button>
+            <button
+              class="button primary"
+              :disabled="!selectedUser"
+              @click="deleteUser"
+            >
+              Delete User
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- Error -->
+      <div v-if="error" class="text-error">
+        {{ error }}
+      </div>
+
       <!-- Divider -->
-      <hr class="mb-6" />
+      <hr />
 
       <!-- Loading -->
       <div v-if="loading" class="opacity-70 mb-4">Loading users...</div>
@@ -53,19 +62,20 @@
               v-for="user in users"
               :key="user.id"
               :class="[
-                'transition-opacity',
+                'transition-opacity cursor-pointer',
                 selectedUserId === user.id ? 'active' : '',
                 selectedUserId && selectedUserId !== user.id
                   ? 'opacity-60'
                   : 'opacity-100',
               ]"
+              @click="selectedUserId = user.id"
             >
               <td>
                 <input
                   type="radio"
                   :value="user.id"
                   v-model="selectedUserId"
-                  class="check"
+                  class="check mt-1"
                 />
               </td>
 
@@ -73,6 +83,7 @@
 
               <td
                 :class="user.role === 'admin' ? 'text-success' : 'text-light'"
+                class="capitalize"
               >
                 {{ user.role }}
               </td>
@@ -91,7 +102,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { getAuthToken } from '@/data/auth';
-import { formatDate } from '@/utils/general'
+import { formatDate } from '@/utils/general';
 
 interface User {
   id: number;
