@@ -19,7 +19,14 @@
       </template>
     </div>
     <div v-if="authenticated" class="flex gap-2">
-      <span> Hi, {{ currentUser?.username }}! </span>
+      <span>
+        Hi,
+        <router-link v-if="currentUser?.role === 'admin'" to="/admin">{{
+          currentUser?.username
+        }}</router-link>
+        <span v-else>{{ currentUser?.username }}</span
+        >!
+      </span>
       <router-link to="/logout">Logout</router-link>
     </div>
   </nav>
