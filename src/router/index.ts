@@ -9,8 +9,9 @@ import CreateView from '../views/Create.vue';
 import LoginView from '../views/Login.vue';
 import RegisterView from '../views/Register.vue';
 import LogoutView from '../views/Logout.vue';
-import { authenticated } from '@/data/auth';
+import { authenticated, currentUser } from '@/data/auth';
 import PublicLeagueView from '../views/PublicLeague.vue';
+import AdminView from '../views/AdminView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -79,6 +80,24 @@ const routes: Array<RouteRecordRaw> = [
     name: 'PublicLeague',
     component: PublicLeagueView,
   },
+  {
+  path: '/admin',
+  name: 'Admin',
+  component: AdminView,
+  beforeEnter: (_to, _from, next) => {
+    if (!authenticated.value) {
+      next('/login');
+      return;
+    }
+
+    if (currentUser.value?.role !== 'admin') {
+      next('/results');
+      return;
+    }
+
+    next();
+  },
+},
 ];
 
 const router = createRouter({
