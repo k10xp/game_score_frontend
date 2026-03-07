@@ -11,7 +11,7 @@
       <router-link to="/public-league">Public League</router-link>
       <template v-if="authenticated">
         <router-link to="/results">Games</router-link>
-        <router-link to="/results/create">New Game</router-link>
+        <RouterLink to="/statistics">Statistics</RouterLink>
       </template>
       <template v-else>
         <router-link to="/login">Login</router-link>

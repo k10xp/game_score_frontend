@@ -5,7 +5,9 @@
         class="actions-primary flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-6"
       >
         <h1 class="text-3xl">My Games</h1>
-        <router-link to="/create" class="button primary">New Game</router-link>
+        <router-link v-if="isAdmin" to="/create" class="button primary">
+          New Game
+        </router-link>
       </div>
 
       <GameResultsChart v-if="matches.length" :matches="matches" />
@@ -80,7 +82,10 @@ import { API_ENDPOINT } from '@/data/consts';
 import Modal from '@/components/Modal.vue';
 import type { GetMatch, BackendMatch } from '@/data/matchModels';
 import { transformMatch } from '@/data/matchModels';
-import { getAuthToken } from '@/data/auth';
+import { getAuthToken, currentUser } from '@/data/auth';
+
+//isAdmin
+const isAdmin = computed(() => currentUser.value?.role === 'admin');
 
 // Constants
 const endpoint = API_ENDPOINT + '/match';
